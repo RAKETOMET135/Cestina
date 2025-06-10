@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Čeština test</title>
+    <link rel="shortcut icon" type="x-icon" href="Logo.png">
+    <style>
+        body {
+            background-color: rgb(22, 22, 22);
+        }
+
+        #question {
+            color: white;
+            font-size: 3rem;
+            position: absolute;
+            left: 50%;
+            translate: -50%;
+            user-select: none;
+        }
+
+        #user-input {
+            position: absolute;
+            left: 50%;
+            translate: -50%;
+            top: 20%;
+            width: 50%;
+            height: 5%;
+            font-size: 1.5rem;
+            outline: none;
+            border: none;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        #submit {
+            position: absolute;
+            left: 50%;
+            translate: -50%;
+            top: 30%;
+            cursor: pointer;
+        }
+
+        #u-umlaut-button {
+            position: absolute;
+            left: 50%;
+            translate: -50%;
+            top: 35%;
+            cursor: pointer;
+        }
+
+        #warning {
+            color: white;
+            position: absolute;
+            left: 50%;
+            translate: -50%;
+            bottom: 5%;
+            user-select: none;
+            text-align: center;
+        }
+
+        button {
+            border: none;
+            border-radius: 10px;
+            background-color: white;
+            padding: 5px;
+            padding-left: 10px;
+            padding-right: 10px;
+            scale: 1.5;
+            transition: all 0.1s;
+            outline: none;
+        }
+        button:hover {
+            scale: 1.6;
+        }
+
+        @media (width < 800px) {
+            #user-input {
+                width: 80%;
+                font-size: 1rem;
+            }
+
+            #question {
+                font-size: 1.5rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <p id="question">content</p>
+    <input id="user-input" type="text" autocomplete="none" placeholder="Jména nebo díla odděluj čárkou">
+    <button id="submit">Zkontrolovat (Enter)</button>
+    <button id="u-umlaut-button">ö</button>
+    <p id="warning">Tato webová stránka slouží jen pro studium. Jedná se pouze o prototyp.</p>
+
+    <script>
+        const question = document.querySelector("#question")
+        const userInput = document.querySelector("#user-input")
+        const submit = document.querySelector("#submit")
+        const uUmlaut = document.querySelector("#u-umlaut-button")
+
+        let selectedQuestion = null
+        let displayAnswer = false
+        let numbers = []
+
+        let questions = [
+            {
+                q: "Autoři imaginativní meziválečné prózy",
+                i: "Vladislav Vančura"
+            },
+            {
+                q: "Autoři katolického proudu",
+                i: "Jakub Deml, Jan Zahradníček, Bohuslav Reynek, Jaroslav Durych, Jan Čep"
+            },
+            {
+                q: "Autoři sociální prózy",
+                i: "Ivan Olbracht, Marie Majerová, Marie Pujmanová"
+            },
+            {
+                q: "Autoři psychologické prózy",
+                i: "Jaroslav Havlíček, Egon Hostovský, Jarmila Glazarová"
+            },
+            {
+                q: "Autoři historické prózy a živ. románů",
+                i: "František Kožík, Karel Schulz"
+            },
+            {
+                q: "Autoři návratu k lid. kultuře a tradici za okupace",
+                i: "Josef Štefan Kubín, Jan Drda"
+            },
+            {
+                q: "Co napsal Vladislav Vančura?",
+                i: "Pekař Jan Marhoul, Pole orná a válečná, Rozmarné léto, Merkéta Lazarová"
+            },
+            {
+                q: "Co napsal Jakub Deml?",
+                i: "Hrad Smrti, Tanec Smrti, Moji přátelé, Miriam, Šlépěje, Zapomenuté světlo"
+            },
+            {
+                q: "Co napsal Ivan Olbracht?",
+                i: "Žalář nejtemnější, Podivné přátelství herce Jesenia, Nikola Šuhaj loupežník, Golet v údolí, Anna proletářka"
+            },
+            {
+                q: "Co napsala Marie Majerová?",
+                i: "Siréna, Havířská balada, Robinsonka"
+            },
+            {
+                q: "Co napsala Marie Pujmanová?",
+                i: "Lidé na křižovatce"
+            },
+            {
+                q: "Co napsal Jaroslav Havlíček?",
+                i: "Petrolejové lampy, Neviditelný, Helimadoe"
+            },
+            {
+                q: "Co napsal Egor Hostovský",
+                i: "Případ profesora Körnera, Žhář, Cizinec hledá byt, Listy z vyhnanství, Všeobecná spiknutí"
+            },
+            {
+                q: "Co napsala Jarmila Glazarová?",
+                i: "Roky v kruhu, Vlčí jáma, Advent"
+            },
+            {
+                q: "Co napsal František Kožík? (Mimo živ. romány)",
+                i: "Největší z Pierotů"
+            },
+            {
+                q: "Co napsal Karel Schulz?",
+                i: "Kámen a bolest"
+            },
+            {
+                q: "Co napsal Jan Drda?",
+                i: "Městečko na dlani, České pohádky, Dalskabáty, hříšná ves, Hrátky s čertem"
+            },
+            {
+                q: "Co sbíral Josef Štefan Kubín?",
+                i: "pohádky"
+            }
+        ]
+
+        function displayQuestion(){
+            if (numbers.length <= 0){
+                for (let i = 0; i < questions.length; i++){
+                    numbers.push(i)
+                }
+            }
+
+            let rn = Math.floor(Math.random() * numbers.length)
+            let number = numbers[rn]
+
+            selectedQuestion = questions[number]
+
+            question.innerText = selectedQuestion.q
+
+            numbers.splice(rn, 1)
+        }
+
+        function getWordsFromString(wordString){
+            let words = []
+
+            let buildedWord = ""
+
+            for (let i = 0; i < wordString.length; i++){
+                const letter = wordString.slice(i, i + 1)
+
+                if (letter === ","){
+                    words.push(buildedWord)
+                    buildedWord = ""
+
+                    continue
+                }
+                else if (letter === " " && buildedWord === ""){
+                    continue
+                }
+                
+                buildedWord += letter
+            }
+
+            if (buildedWord !== ""){
+                words.push(buildedWord)
+            }
+
+            return words
+        }
+
+        function insertLetterAtCursor(letter) {
+            if (document.selection) {
+                userInput.focus()
+                let selected = document.selection.createRange()
+                selected.text = letter
+                selected.moveStart("character", letter.length)
+                selected.select()
+            }
+            else if (userInput.selectionStart || userInput.selectionStart == '0') {
+                let startPos = userInput.selectionStart
+                let endPos = userInput.selectionEnd
+                userInput.value = userInput.value.substring(0, startPos)
+                    + letter
+                    + userInput.value.substring(endPos, userInput.value.length)
+                userInput.selectionStart = startPos + letter.length
+                userInput.selectionEnd = startPos + letter.length
+            } else {
+                userInput.value += letter
+            }
+        }
+
+        function submitAnswer(){
+            if (displayAnswer){
+                displayAnswer = false
+
+                userInput.value = ""
+                userInput.style.color = "black"
+                userInput.readOnly = false
+
+                displayQuestion()
+
+                return
+            }
+
+            const input = userInput.value
+
+            let inputWords = getWordsFromString(input)
+            let correctWords = getWordsFromString(selectedQuestion.i)
+                
+            let correct = true
+
+            for (let i = 0; i < correctWords.length; i++){
+                const cWord = correctWords[i]
+
+                let exists = false
+
+                for (let j = 0; j < inputWords.length; j++){
+                    const iWord = inputWords[j]
+
+                    if (iWord !== cWord) continue
+
+                    exists = true
+                }
+
+                if (exists) continue
+
+                correct = false
+
+                break
+            }
+
+            for (let i = 0; i < inputWords.length; i++){
+                const iWord = inputWords[i]
+
+                let exists = false
+
+                for (let j = 0; j < correctWords.length; j++){
+                    const cWord = correctWords[j]
+
+                    if (cWord !== iWord) continue
+
+                    exists = true
+                }
+
+                if (exists) continue
+
+                correct = false
+
+                break
+            }
+
+            if (correct){
+                userInput.value = ""
+
+                displayQuestion()
+            }
+            else {
+                userInput.value = selectedQuestion.i
+                userInput.style.color = "red"
+                userInput.readOnly = true
+
+                displayAnswer = true
+            }
+        }
+        
+        displayQuestion()
+
+        submit.addEventListener("click", submitAnswer)
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Enter"){
+                submitAnswer()
+            }
+        })
+        uUmlaut.addEventListener("click", () => {
+            insertLetterAtCursor("ö")
+
+            userInput.focus()
+        })
+    </script>
+</body>
+</html>
